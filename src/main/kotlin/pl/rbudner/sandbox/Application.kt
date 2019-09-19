@@ -6,4 +6,5 @@ class Application {
 
 fun main() {
     Application().display("hello world")
+    Application().display(Person("Robert").name)
 }
