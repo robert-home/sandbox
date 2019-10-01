@@ -1,0 +1,8 @@
+{
+  "name": "Vulnerability Sandbox",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~2.5.9",
+    "jquery": "1.7.1"
+  }
+}
