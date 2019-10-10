@@ -1,0 +1,57 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.1/language-java/ for more details
+#
+#version: 2.1
+#orbs:
+#  snyk: snyk/snyk@0.0.8
+#jobs:
+#  build:
+#    docker:
+#      - image: 'circleci/buildpack-deps:stretch'
+#    environment:
+#      #IMAGE_NAME: dragonproject-docker-apps.jfrog.io/sandbox
+#      IMAGE_NAME: sandbox
+#    steps:
+#      - checkout
+#      - setup_remote_docker
+#      - run: docker build -t $IMAGE_NAME .
+#      - snyk/scan:
+#          docker-image-name: $IMAGE_NAME
+version: 2.1
+orbs:
+  twistcli: twistlock/twistcli-scan@1.0.5
+  snyk: snyk/snyk@0.0.8
+jobs:
+  docker-build-and-save:
+    executor: twistcli/default
+    steps:
+      - checkout
+      - run:
+          name: Build & Test
+          command: ./script/cibuild
+      - run: 'docker build -t sandbox .'
+      - run: mkdir -p workspace
+      - run: 'docker save sandbox -o workspace/image.tar'
+      - snyk/scan:
+          docker-image-name: sandbox
+          monitor-on-build: true
+          fail-on-issues: false
+          severity-threshold: high
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - image.tar
+workflows:
+  scan-image:
+    jobs:
+      - docker-build-and-save
+      - twistcli/scan-image:
+          requires:
+            - docker-build-and-save
+          context: tl_scan_context
+          image: 'sandbox'
+          image-tar: image.tar
+#          vuln-thresh: low
+#          comp-thresh: ''
+#          only-fixed: true
