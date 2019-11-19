@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:14
 
 ## The set up below is from the spring guide that recommends breaking up the spring boot app this way
 ## Calling the main calss directly improves start up time.
