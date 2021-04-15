@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
+    compile 'org.springframework.data:spring-data-jpa:2.5.0'
     compile 'org.apache.commons:commons-email:1.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
